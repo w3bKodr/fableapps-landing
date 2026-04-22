@@ -32,6 +32,7 @@
         radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 30%),
         linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
       line-height: 1.75;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
     .wrap {
@@ -126,9 +127,69 @@
       .wrap { padding: 18px 14px 52px; }
       .hero, .card { padding: 22px 18px; border-radius: 20px; }
     }
+
+    /* Scroll progress bar */
+    .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, #6366f1, #8b5cf6, #f59e0b); width: 0%; z-index: 1001; transition: width 0.1s ease-out; }
+
+    /* Theme toggle button */
+    .theme-toggle-btn { position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.1); border-radius: 50%; width: 44px; height: 44px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(10px); }
+    .theme-toggle-btn:hover { transform: scale(1.1); box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    .sun-icon, .moon-icon { position: absolute; transition: opacity 0.3s ease, transform 0.3s ease; }
+    .sun-icon { opacity: 1; transform: rotate(0deg); }
+    .moon-icon { opacity: 0; transform: rotate(-90deg); }
+
+    /* Dark mode styles */
+    [data-theme="dark"] body {
+      background:
+        radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.1), transparent 30%),
+        linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 100%);
+    }
+
+    [data-theme="dark"] {
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: rgba(255,255,255,0.08);
+      --card: rgba(30,41,59,0.9);
+      --shadow: 0 24px 80px rgba(0,0,0,0.3);
+    }
+
+    [data-theme="dark"] .hero {
+      background: var(--card);
+      border-color: var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    [data-theme="dark"] .card {
+      background: rgba(30,41,59,0.82);
+      border-color: var(--border);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    [data-theme="dark"] .theme-toggle-btn {
+      background: rgba(30,41,59,0.9);
+      border-color: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+    }
+
+    [data-theme="dark"] .sun-icon { opacity: 0; transform: rotate(90deg); }
+    [data-theme="dark"] .moon-icon { opacity: 1; transform: rotate(0deg); }
+
+    [data-theme="dark"] footer a, [data-theme="dark"] .toplinks a {
+      color: #818cf8;
+    }
+
+    [data-theme="dark"] .card a {
+      color: #818cf8;
+    }
   </style>
 </head>
 <body>
+  <button class="theme-toggle-btn" aria-label="Toggle dark mode">
+    <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor"/></svg>
+  </button>
+  <div class="scroll-progress" id="scrollProgress"></div>
   <main class="wrap">
     <section class="hero">
       <div class="eyebrow">Family Chores</div>
@@ -228,5 +289,36 @@
       <a href="privacy-policy.html">Privacy Policy</a>
     </div>
   </main>
+
+  <script>
+(function() {
+  const themeToggle = document.querySelector('.theme-toggle-btn');
+  const html = document.documentElement;
+  
+  // Check for saved preference or system preference
+  const savedTheme = localStorage.getItem('fable-theme');
+  if (savedTheme) {
+    html.setAttribute('data-theme', savedTheme);
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    html.setAttribute('data-theme', 'dark');
+  }
+  
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('fable-theme', next);
+  });
+  
+  // Scroll progress
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+  });
+})();
+</script>
+
 </body>
 </html>
