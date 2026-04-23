@@ -8,9 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- GSAP + ScrollTrigger -->
+  <!-- GSAP + ScrollTrigger + ScrollToPlugin -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
 
   <style>
     /* ═══════════════════════════════════════════
@@ -83,45 +84,30 @@
       mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 10%, transparent 70%);
     }
 
-    .floating-orb {
+    /* Wave Background */
+    .wave-container {
       position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
+      left: 0;
+      width: 200%;
+      overflow: hidden;
       mix-blend-mode: multiply;
-      will-change: transform;
+      display: flex;
     }
-
-    .orb-1 {
-      width: 45vw;
-      height: 45vw;
-      top: -15%;
-      left: -10%;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
+    .wave-container svg {
+      width: 100%;
+      height: 100%;
+      animation: wave-bg 20s linear infinite;
     }
-
-    .orb-2 {
-      width: 35vw;
-      height: 35vw;
-      top: 15%;
-      right: -15%;
-      background: radial-gradient(circle, rgba(139, 92, 246, 0.12), transparent 70%);
+    @keyframes wave-bg {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
     }
-
-    .orb-3 {
-      width: 50vw;
-      height: 50vw;
-      bottom: -25%;
-      left: 15%;
-      background: radial-gradient(circle, rgba(6, 182, 212, 0.1), transparent 70%);
-    }
-
-    .orb-4 {
-      width: 30vw;
-      height: 30vw;
-      top: 50%;
-      left: 40%;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.08), transparent 70%);
-    }
+    #bg-wave-1 { bottom: 10%; height: 60vh; color: rgba(148, 163, 184, 0.1); filter: blur(6px); opacity: 0.4; }
+    #bg-wave-1 svg { animation-duration: 45s; }
+    #bg-wave-2 { bottom: 0; height: 50vh; color: rgba(148, 163, 184, 0.3); filter: blur(2px); opacity: 0.7; }
+    #bg-wave-2 svg { animation-duration: 20s; }
+    #bg-wave-3 { bottom: -10%; height: 70vh; color: rgba(100, 116, 139, 0.2); filter: blur(8px); opacity: 0.6; }
+    #bg-wave-3 svg { animation-duration: 35s; animation-direction: reverse; }
 
     /* ═══════════════════════════════════════════
        HEADER / NAV
@@ -292,7 +278,6 @@
       color: var(--primary-indigo);
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      opacity: 0;
     }
 
     .hero-eyebrow-dot {
@@ -308,7 +293,6 @@
       line-height: 1.02;
       letter-spacing: -2.5px;
       color: var(--text-primary);
-      opacity: 0;
     }
 
     .hero-title .gradient-text {
@@ -324,14 +308,12 @@
       line-height: 1.7;
       color: var(--text-secondary);
       max-width: 520px;
-      opacity: 0;
     }
 
     .hero-actions {
       display: flex;
       align-items: center;
       gap: 24px;
-      opacity: 0;
     }
 
     .btn-primary {
@@ -402,7 +384,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      opacity: 0;
     }
 
     .hero-window {
@@ -990,6 +971,7 @@
     .why-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: minmax(320px, auto);
       gap: 32px;
     }
 
@@ -1001,7 +983,36 @@
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
+    
+    .why-card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .why-card-visual {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 32px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .why-card:nth-child(1) { grid-column: span 2; }
+    .why-card:nth-child(2) { grid-column: span 1; }
+    .why-card:nth-child(3) { 
+      grid-column: span 3; 
+      flex-direction: row; 
+      align-items: center;
+      padding: 60px;
+      min-height: auto;
+    }
+    .why-card:nth-child(3) .why-card-content { flex: 1; }
+    .why-card:nth-child(3) .why-card-visual { flex: 1; margin-top: 0; justify-content: flex-end; }
 
     .why-card::before {
       content: '';
@@ -1075,7 +1086,18 @@
       .why-grid {
         grid-template-columns: 1fr;
         gap: 20px;
+        grid-auto-rows: auto;
       }
+      .why-card:nth-child(1), .why-card:nth-child(2), .why-card:nth-child(3) {
+        grid-column: span 1;
+      }
+      .why-card:nth-child(3) {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 40px 32px;
+      }
+      .why-card:nth-child(3) .why-card-visual { justify-content: flex-start; margin-top: 32px; width: 100%; }
+      
       .why-header {
         margin-bottom: 48px;
       }
@@ -1249,10 +1271,24 @@
        CINEMATIC BACKGROUND
        ═══════════════════════════════════════════ -->
   <div class="cinematic-bg grid-overlay">
-    <div class="floating-orb orb-1"></div>
-    <div class="floating-orb orb-2"></div>
-    <div class="floating-orb orb-3"></div>
-    <div class="floating-orb orb-4"></div>
+    <div class="wave-container" id="bg-wave-1">
+      <svg preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="currentColor" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+        <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+      </svg>
+    </div>
+    <div class="wave-container" id="bg-wave-2">
+      <svg preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="currentColor" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+        <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+      </svg>
+    </div>
+    <div class="wave-container" id="bg-wave-3">
+      <svg preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="currentColor" d="M0,160 Q360,320 720,160 T1440,160 V320 H0 Z"></path>
+        <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,320 720,160 T1440,160 V320 H0 Z"></path>
+      </svg>
+    </div>
   </div>
 
   <!-- ═══════════════════════════════════════════
@@ -1500,41 +1536,69 @@
         </div>
         <div class="why-grid">
           <div class="why-card">
-            <div class="why-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                <path d="M2 17l10 5 10-5"></path>
-                <path d="M2 12l10 5 10-5"></path>
-              </svg>
+            <div class="why-card-content">
+              <div class="why-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                  <path d="M2 17l10 5 10-5"></path>
+                  <path d="M2 12l10 5 10-5"></path>
+                </svg>
+              </div>
+              <h3 class="why-card-title">Thoughtful Design</h3>
+              <p class="why-card-text">
+                Thoughtfully crafted software designed to blend powerful functionality with seamless, intuitive interfaces.
+              </p>
             </div>
-            <h3 class="why-card-title">Thoughtful Design</h3>
-            <p class="why-card-text">
-              Thoughtfully crafted software designed to blend powerful functionality with seamless, intuitive interfaces.
-            </p>
+            <div class="why-card-visual">
+              <div style="width: 80%; height: 160px; border-radius: 16px; background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(139,92,246,0.05)); border: 1px solid rgba(99,102,241,0.1); position: relative; overflow: hidden; display: flex; gap: 12px; padding: 20px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);">
+                <div style="width: 40px; height: 100%; border-radius: 8px; background: rgba(99,102,241,0.1);"></div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+                  <div style="width: 100%; height: 32px; border-radius: 8px; background: rgba(99,102,241,0.15);"></div>
+                  <div style="width: 60%; height: 12px; border-radius: 6px; background: rgba(99,102,241,0.1);"></div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="why-card">
-            <div class="why-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                <line x1="12" y1="18" x2="12.01" y2="18"></line>
-              </svg>
+            <div class="why-card-content">
+              <div class="why-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+              </div>
+              <h3 class="why-card-title">Every Platform</h3>
+              <p class="why-card-text">
+                We make thoughtful applications for iOS, Android, Mac, and Windows.
+              </p>
             </div>
-            <h3 class="why-card-title">Every Platform</h3>
-            <p class="why-card-text">
-              We make thoughtful, well-designed applications for iOS, Android, Mac, and Windows — wherever you need them.
-            </p>
+            <div class="why-card-visual">
+              <div style="width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(from 180deg at 50% 50%, rgba(6,182,212,0.1) 0deg, rgba(16,185,129,0.1) 360deg); border: 1px solid rgba(6,182,212,0.2); filter: blur(8px);"></div>
+              <div style="position: absolute; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; width: 80%;">
+                 <div style="width: 40px; height: 40px; border-radius: 12px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border);"></div>
+                 <div style="width: 40px; height: 40px; border-radius: 12px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border);"></div>
+                 <div style="width: 40px; height: 40px; border-radius: 12px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border);"></div>
+              </div>
+            </div>
           </div>
           <div class="why-card">
-            <div class="why-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
+            <div class="why-card-content">
+              <div class="why-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <h3 class="why-card-title">More Time Living</h3>
+              <p class="why-card-text">
+                We build elegant software solutions that simplify everyday tasks, giving you more free time to focus on actually living.
+              </p>
             </div>
-            <h3 class="why-card-title">More Time Living</h3>
-            <p class="why-card-text">
-              We build elegant software solutions that simplify everyday tasks, giving you more free time to focus on actually living.
-            </p>
+            <div class="why-card-visual">
+               <div style="width: 100%; max-width: 300px; height: 12px; border-radius: 6px; background: rgba(16,185,129,0.1); overflow: hidden; position: relative;">
+                 <div style="position: absolute; top: 0; left: 0; bottom: 0; width: 60%; background: var(--accent-emerald); border-radius: 6px;"></div>
+               </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1576,7 +1640,7 @@
        ═══════════════════════════════════════════ -->
   <script>
     // Register ScrollTrigger
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
     // ═══════════════════════════════════════════
     // HEADER SCROLL BEHAVIOR
@@ -1651,98 +1715,35 @@
       }, "-=1.0");
 
     // Hero parallax on scroll
-    gsap.to('.hero-title', {
-      y: -80,
-      opacity: 0,
-      scrollTrigger: {
-        trigger: '#hero',
-        start: 'top top',
-        end: 'bottom 60%',
-        scrub: 1
+    gsap.fromTo('.hero-title', 
+      { y: 0, opacity: 1 },
+      {
+        y: -80,
+        opacity: 0,
+        scrollTrigger: {
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom 60%',
+          scrub: 1
+        }
       }
-    });
+    );
 
-    gsap.to('#heroVisual', {
-      y: -120,
-      opacity: 0,
-      scale: 0.9,
-      scrollTrigger: {
-        trigger: '#hero',
-        start: '10% top',
-        end: 'bottom 40%',
-        scrub: 1
+    gsap.fromTo('#heroVisual', 
+      { y: 0, opacity: 1, scale: 1 },
+      {
+        y: -120,
+        opacity: 0,
+        scale: 0.9,
+        scrollTrigger: {
+          trigger: '#hero',
+          start: '10% top',
+          end: 'bottom 40%',
+          scrub: 1
+        }
       }
-    });
+    );
 
-    // ═══════════════════════════════════════════
-    // FLOATING ORBS BACKGROUND ANIMATION
-    // ═══════════════════════════════════════════
-    gsap.to('.orb-1', {
-      y: 80,
-      x: -40,
-      duration: 8,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-
-    gsap.to('.orb-2', {
-      y: -60,
-      x: 50,
-      duration: 10,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-
-    gsap.to('.orb-3', {
-      y: 50,
-      x: -30,
-      duration: 12,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-
-    gsap.to('.orb-4', {
-      y: -40,
-      x: 60,
-      duration: 9,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-
-    // Parallax orbs on scroll
-    gsap.to('.orb-1', {
-      y: -200,
-      scrollTrigger: {
-        trigger: 'body',
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 3
-      }
-    });
-
-    gsap.to('.orb-2', {
-      y: -150,
-      scrollTrigger: {
-        trigger: 'body',
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 4
-      }
-    });
-
-    gsap.to('.orb-3', {
-      y: -100,
-      scrollTrigger: {
-        trigger: 'body',
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 5
-      }
-    });
 
     // ═══════════════════════════════════════════
     // SECTION DIVIDER ANIMATION

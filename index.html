@@ -16,13 +16,11 @@
       theme: {
         extend: {
           fontFamily: { sans: ['Inter', 'sans-serif'] },
-          colors: {
-            accent: '#38bdf8',
-          },
           animation: {
             'float': 'float 8s ease-in-out infinite',
             'pulse-slow': 'pulseSlow 4s ease-in-out infinite',
             'wave': 'wave 20s linear infinite',
+            'scroll-up': 'scrollUp 30s linear infinite',
           },
           keyframes: {
             wave: {
@@ -36,6 +34,10 @@
             pulseSlow: {
               '0%, 100%': { opacity: '0.5' },
               '50%': { opacity: '1' },
+            },
+            scrollUp: {
+              '0%': { transform: 'translateY(0)' },
+              '100%': { transform: 'translateY(-50%)' },
             }
           }
         }
@@ -78,8 +80,8 @@
     /* Scroll Reveal - Cinematic custom easing */
     .reveal {
       opacity: 0;
-      transform: translateY(30px) scale(0.98);
-      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(40px) scale(0.96);
+      transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
     .reveal.is-visible {
@@ -135,15 +137,25 @@
   <div class="fixed inset-0 z-[-2] overflow-hidden pointer-events-none transition-colors duration-1000 bg-slate-50 dark:bg-[#030712]">
     <div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_100%_100%_at_50%_0%,black_10%,transparent_70%)] opacity-50"></div>
 
-    <!-- Smooth Monochromatic Waves -->
-    <div class="absolute bottom-0 left-0 w-[200%] h-[50vh] text-slate-300/30 dark:text-white/[0.03] flex mix-blend-multiply dark:mix-blend-screen overflow-hidden blur-[2px] opacity-70">
+    <!-- Smooth Monochromatic Waves with Depth Layers -->
+    <!-- Far Background Wave -->
+    <div id="bg-wave-1" class="absolute bottom-[10%] left-0 w-[200%] h-[60vh] text-slate-300/10 dark:text-white/[0.01] flex mix-blend-multiply dark:mix-blend-screen overflow-hidden blur-[6px] opacity-40">
+      <svg class="w-full h-full animate-wave" style="animation-duration: 45s;" preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="currentColor" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+        <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+      </svg>
+    </div>
+
+    <!-- Mid Wave -->
+    <div id="bg-wave-2" class="absolute bottom-0 left-0 w-[200%] h-[50vh] text-slate-300/30 dark:text-white/[0.03] flex mix-blend-multiply dark:mix-blend-screen overflow-hidden blur-[2px] opacity-70">
       <svg class="w-full h-full animate-wave" preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
         <path fill="currentColor" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
         <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
       </svg>
     </div>
     
-    <div class="absolute bottom-0 left-0 w-[200%] h-[70vh] text-slate-400/20 dark:text-white/[0.02] flex mix-blend-multiply dark:mix-blend-screen overflow-hidden blur-[4px] opacity-60">
+    <!-- Foreground Blur Shape -->
+    <div id="bg-wave-3" class="absolute -bottom-[10%] left-0 w-[200%] h-[70vh] text-slate-400/20 dark:text-white/[0.02] flex mix-blend-multiply dark:mix-blend-screen overflow-hidden blur-[8px] opacity-60">
       <svg class="w-full h-full animate-wave" style="animation-duration: 35s; animation-direction: reverse;" preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
         <path fill="currentColor" d="M0,160 Q360,320 720,160 T1440,160 V320 H0 Z"></path>
         <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,320 720,160 T1440,160 V320 H0 Z"></path>
@@ -155,7 +167,7 @@
   <header class="fixed w-full top-0 z-50 transition-all duration-500" id="header">
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
       <div class="text-xl font-bold tracking-tighter flex items-center gap-3">
-        <img src="assets/fa-logo.png" alt="FableApps Logo" class="w-8 h-8 object-contain">
+        <img src="assets/fa-logo.png" alt="FableApps Logo" class="w-8 h-8 object-contain transition-transform duration-500 hover:rotate-12 hover:scale-110">
         FableApps
       </div>
       <div class="flex items-center gap-6 ml-auto">
@@ -219,9 +231,8 @@
         </div>
 
         <p
-          class="reveal delay-200 text-lg lg:text-xl text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed font-light">
-          We make thoughtful, well-designed applications for iOS, Android, Mac, and Windows. We build elegant software
-          solutions that simplify everyday tasks, giving you more free time to focus on actually living.
+          class="reveal delay-200 text-lg lg:text-xl text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed font-light">
+          Thoughtfully crafted apps for your everyday life. We build simple, reliable software to help you stay organized and focus on what matters.
         </p>
 
         <div class="reveal delay-300 flex items-center gap-6 mt-4">
@@ -338,22 +349,31 @@
 
               <!-- Phone Frame -->
               <div
-                class="w-full h-full bg-slate-100 dark:bg-[#0f172a] rounded-[3rem] border-[8px] border-slate-800 dark:border-black shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] dark:shadow-2xl relative overflow-hidden p-6 pt-10 flex flex-col gap-4 transition-transform duration-700 group-hover:-translate-y-2 group-hover:rotate-1">
-                <!-- Notch / Dynamic Island -->
-                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-6 bg-slate-800 dark:bg-black rounded-full mb-4"></div>
+                class="w-full h-full bg-slate-100 dark:bg-[#0f172a] rounded-[3rem] border-[8px] border-slate-800 dark:border-black shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] dark:shadow-2xl relative overflow-hidden p-6 pt-10 flex flex-col gap-4 transition-transform duration-700 group-hover:-translate-y-4 group-hover:rotate-3">
+                
+                <!-- Screen Reflection Sweep -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 dark:via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-[1500ms] ease-in-out pointer-events-none z-40"></div>
 
-                <!-- Abstract Task Items -->
-                <div
-                  class="w-full h-16 rounded-2xl bg-accent/20 dark:bg-accent/10 border border-accent/30 dark:border-accent/20 animate-pulse-slow">
-                </div>
-                <div
-                  class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05]">
-                </div>
-                <div
-                  class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05]">
-                </div>
-                <div
-                  class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05] opacity-60">
+                <!-- Notch / Dynamic Island -->
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-6 bg-slate-800 dark:bg-black rounded-full mb-4 z-30"></div>
+
+                <!-- Abstract Task Items Container -->
+                <div class="flex flex-col gap-4 transform group-hover:-translate-y-6 transition-transform duration-1000 ease-out h-full">
+                  <div
+                    class="w-full h-16 rounded-2xl bg-accent/20 dark:bg-accent/10 border border-accent/30 dark:border-accent/20 animate-pulse-slow shrink-0">
+                  </div>
+                  <div
+                    class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05] shrink-0">
+                  </div>
+                  <div
+                    class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05] shrink-0">
+                  </div>
+                  <div
+                    class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05] opacity-60 shrink-0">
+                  </div>
+                  <div
+                    class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05] opacity-30 shrink-0">
+                  </div>
                 </div>
               </div>
 
@@ -367,19 +387,22 @@
 
     <!-- Contact Section -->
     <section id="contact" class="fade-section max-w-4xl mx-auto px-6 text-center reveal mt-40">
-      <div class="glass rounded-[3rem] py-24 px-8 flex flex-col items-center relative overflow-hidden group bg-slate-100/50 dark:bg-slate-900/50">
-        <h2 class="text-4xl lg:text-5xl font-bold mb-6 relative z-10">Let's chat.</h2>
-        <p class="text-lg text-slate-600 dark:text-slate-400 mb-12 max-w-lg mx-auto font-light relative z-10">
+      <div class="glass rounded-[3rem] py-24 px-8 flex flex-col items-center relative overflow-hidden group bg-slate-100/50 dark:bg-slate-900/50 shadow-2xl border border-slate-300/50 dark:border-white/10 hover:shadow-[0_0_80px_-15px_rgba(56,189,248,0.2)] transition-shadow duration-700">
+        <!-- Inside Animated Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-purple-500/5 dark:from-accent/10 dark:to-purple-500/10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+        <h2 class="text-4xl lg:text-5xl font-bold mb-6 relative z-10 tracking-tight">Let's chat.</h2>
+        <p class="text-lg text-slate-500 dark:text-slate-400 mb-12 max-w-lg mx-auto font-light relative z-10">
           Have an idea, a question, or just want to connect? We're always happy to hear from you.
         </p>
         <a href="mailto:contact@fableapps.com"
-          class="btn-glow relative z-10 inline-flex items-center gap-3 bg-slate-900 dark:bg-white text-white dark:text-black px-8 py-4 rounded-full font-semibold text-sm hover:scale-105 transition-transform duration-300">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
+          class="group/btn relative z-10 inline-flex items-center gap-3 bg-slate-900 dark:bg-white text-white dark:text-black px-10 py-5 rounded-full font-bold text-base hover:scale-[1.03] transition-all duration-300 shadow-xl hover:shadow-[0_0_30px_-5px_rgba(56,189,248,0.4)] overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 dark:via-black/20 to-transparent -translate-x-[150%] group-hover/btn:translate-x-[150%] transition-transform duration-1000 ease-out"></div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="relative z-10">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
             <polyline points="22,6 12,13 2,6"></polyline>
           </svg>
-          contact@fableapps.com
+          <span class="relative z-10">contact@fableapps.com</span>
         </a>
       </div>
     </section>
@@ -412,16 +435,40 @@
       observer.observe(el);
     });
 
-    // Fade out sections on scroll
+    // Smooth Scroll Parallax State
+    let currentScrollY = window.scrollY;
+    let targetScrollY = window.scrollY;
+
     window.addEventListener('scroll', () => {
-      const scrolled = window.scrollY;
+      targetScrollY = window.scrollY;
+    });
+
+    function animationLoop() {
+      // Lerp for smooth parallax (delay/lag effect)
+      currentScrollY += (targetScrollY - currentScrollY) * 0.08;
+
+      // Update background waves with decreasing amplitude down page
+      const wave1 = document.getElementById('bg-wave-1');
+      const wave2 = document.getElementById('bg-wave-2');
+      const wave3 = document.getElementById('bg-wave-3');
+      
+      // Decrease motion amplitude based on scroll
+      const amplitudeFactor = Math.max(0, 1 - (currentScrollY / 2000));
+      
+      if (wave1) wave1.style.transform = `translateY(${currentScrollY * 0.15 * amplitudeFactor}px)`;
+      if (wave2) wave2.style.transform = `translateY(${currentScrollY * 0.08 * amplitudeFactor}px)`;
+      if (wave3) wave3.style.transform = `translateY(${currentScrollY * -0.05 * amplitudeFactor}px)`; 
 
       // Header Blur
       const header = document.getElementById('header');
-      if (scrolled > 20) {
-        header.classList.add('bg-white/60', 'dark:bg-black/40', 'backdrop-blur-2xl', 'border-b', 'border-slate-200', 'dark:border-white/5');
+      if (currentScrollY > 20) {
+        if (!header.classList.contains('backdrop-blur-2xl')) {
+            header.classList.add('bg-white/60', 'dark:bg-black/40', 'backdrop-blur-2xl', 'border-b', 'border-slate-200', 'dark:border-white/5');
+        }
       } else {
-        header.classList.remove('bg-white/60', 'dark:bg-black/40', 'backdrop-blur-2xl', 'border-b', 'border-slate-200', 'dark:border-white/5');
+        if (header.classList.contains('backdrop-blur-2xl')) {
+            header.classList.remove('bg-white/60', 'dark:bg-black/40', 'backdrop-blur-2xl', 'border-b', 'border-slate-200', 'dark:border-white/5');
+        }
       }
 
       // Cinematic Section fading
@@ -437,8 +484,11 @@
         }
       });
 
-
-    });
+      requestAnimationFrame(animationLoop);
+    }
+    
+    // Start loop
+    requestAnimationFrame(animationLoop);
 
 
 
