@@ -20,16 +20,14 @@
             accent: '#38bdf8',
           },
           animation: {
-            'blob': 'blob 20s infinite alternate',
             'float': 'float 8s ease-in-out infinite',
             'pulse-slow': 'pulseSlow 4s ease-in-out infinite',
+            'wave': 'wave 20s linear infinite',
           },
           keyframes: {
-            blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(40px, -40px) scale(1.05)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.95)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            wave: {
+              '0%': { transform: 'translateX(0%)' },
+              '100%': { transform: 'translateX(-50%)' },
             },
             float: {
               '0%, 100%': { transform: 'translateY(0)' },
@@ -99,28 +97,7 @@
     .delay-300 { transition-delay: 300ms; }
     .delay-400 { transition-delay: 400ms; }
     
-    /* Interactive Glow Card */
-    .glow-card {
-      position: relative;
-      isolation: isolate;
-    }
-    .glow-card::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(56, 189, 248, 0.3), transparent 40%);
-      opacity: 0;
-      transition: opacity 0.5s;
-      z-index: -1;
-      pointer-events: none;
-    }
-    .dark .glow-card::before {
-      background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(56, 189, 248, 0.15), transparent 40%);
-    }
-    .glow-card:hover::before {
-      opacity: 1;
-    }
+
 
     /* Button Glow */
     .btn-glow {
@@ -155,21 +132,23 @@
 <body class="selection:bg-accent/30 selection:text-slate-900 dark:selection:text-white relative">
 
   <!-- Immersive Cinematic Background -->
-  <div
-    class="fixed inset-0 z-[-2] overflow-hidden pointer-events-none transition-colors duration-1000 bg-slate-50 dark:bg-[#030712]">
-    <div
-      class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_100%_100%_at_50%_0%,black_10%,transparent_70%)] opacity-50">
-    </div>
+  <div class="fixed inset-0 z-[-2] overflow-hidden pointer-events-none transition-colors duration-1000 bg-slate-50 dark:bg-[#030712]">
+    <div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_100%_100%_at_50%_0%,black_10%,transparent_70%)] opacity-50"></div>
 
-    <div
-      class="bg-orb absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-blue-400/60 dark:bg-blue-900/20 blur-[140px] mix-blend-multiply dark:mix-blend-screen animate-blob transition-transform duration-1000">
+    <!-- Smooth Monochromatic Waves -->
+    <div class="absolute bottom-0 left-0 w-[200%] h-[50vh] text-slate-300/30 dark:text-white/[0.03] flex mix-blend-multiply dark:mix-blend-screen overflow-hidden blur-[2px] opacity-70">
+      <svg class="w-full h-full animate-wave" preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="currentColor" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+        <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,0 720,160 T1440,160 V320 H0 Z"></path>
+      </svg>
     </div>
-    <div
-      class="bg-orb absolute top-[20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-purple-400/50 dark:bg-indigo-900/20 blur-[140px] mix-blend-multiply dark:mix-blend-screen animate-blob"
-      style="animation-delay: 2s;"></div>
-    <div
-      class="bg-orb absolute bottom-[-20%] left-[20%] w-[60vw] h-[60vw] rounded-full bg-cyan-400/50 dark:bg-cyan-900/10 blur-[140px] mix-blend-multiply dark:mix-blend-screen animate-blob"
-      style="animation-delay: 4s;"></div>
+    
+    <div class="absolute bottom-0 left-0 w-[200%] h-[70vh] text-slate-400/20 dark:text-white/[0.02] flex mix-blend-multiply dark:mix-blend-screen overflow-hidden blur-[4px] opacity-60">
+      <svg class="w-full h-full animate-wave" style="animation-duration: 35s; animation-direction: reverse;" preserveAspectRatio="none" viewBox="0 0 2880 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="currentColor" d="M0,160 Q360,320 720,160 T1440,160 V320 H0 Z"></path>
+        <path fill="currentColor" transform="translate(1440, 0)" d="M0,160 Q360,320 720,160 T1440,160 V320 H0 Z"></path>
+      </svg>
+    </div>
   </div>
 
   <!-- Header -->
@@ -268,7 +247,7 @@
           <div class="absolute inset-0 bg-accent/20 blur-[60px] rounded-full"></div>
 
           <div
-            class="hero-mockup aspect-[16/11] rounded-2xl bg-white/60 dark:bg-[#070b14]/80 border border-slate-200 dark:border-white/10 backdrop-blur-2xl shadow-2xl relative overflow-hidden flex flex-col">
+            class="hero-mockup aspect-[16/11] rounded-2xl bg-slate-100/70 dark:bg-[#0a0f1c]/90 border border-slate-300 dark:border-white/10 backdrop-blur-2xl shadow-2xl relative overflow-hidden flex flex-col">
             <!-- Window Bar -->
             <div
               class="h-10 border-b border-slate-200/50 dark:border-white/5 flex items-center px-4 gap-2 bg-white/40 dark:bg-black/40">
@@ -338,17 +317,8 @@
       </div>
 
       <div class="grid grid-cols-1 gap-8">
-        <!-- Interactive Card -->
         <div
-          class="glow-card glass rounded-[2.5rem] p-8 lg:p-12 lg:px-16 flex flex-col lg:flex-row items-center justify-between gap-12 group reveal transition-all duration-1000 hover:shadow-[0_0_50px_-12px_rgba(56,189,248,0.15)] overflow-hidden bg-white/60 dark:bg-[#0a0f1c]/60 border-slate-200/50 dark:border-white/[0.05] relative max-w-5xl mx-auto w-full">
-
-          <!-- Atmospheric Ray -->
-          <div
-            class="absolute -top-24 -left-24 w-96 h-96 bg-accent/20 dark:bg-accent/5 blur-[120px] rounded-full pointer-events-none">
-          </div>
-          <div
-            class="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-500/20 dark:bg-purple-500/5 blur-[120px] rounded-full pointer-events-none">
-          </div>
+          class="glass rounded-[2.5rem] p-8 lg:p-12 lg:px-16 flex flex-col lg:flex-row items-center justify-between gap-12 group reveal transition-all duration-1000 hover:shadow-[0_0_50px_-12px_rgba(56,189,248,0.15)] overflow-hidden bg-slate-100/60 dark:bg-[#0a0f1c]/60 border-slate-200/50 dark:border-white/[0.05] relative max-w-5xl mx-auto w-full">
 
           <div class="flex-1 flex flex-col items-start justify-center z-10 py-6">
             <h3 class="text-4xl font-bold mb-6 text-slate-900 dark:text-white tracking-tight">Family Chores</h3>
@@ -368,22 +338,22 @@
 
               <!-- Phone Frame -->
               <div
-                class="w-full h-full bg-slate-50 dark:bg-[#030712] rounded-[3rem] border border-slate-200 dark:border-white/[0.05] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] dark:shadow-2xl relative overflow-hidden p-6 flex flex-col gap-5 transition-transform duration-700 group-hover:-translate-y-2 group-hover:rotate-1">
-                <!-- Notch -->
-                <div class="w-16 h-1.5 bg-slate-300 dark:bg-white/10 rounded-full mx-auto mb-2"></div>
+                class="w-full h-full bg-slate-100 dark:bg-[#0f172a] rounded-[3rem] border-[8px] border-slate-800 dark:border-black shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] dark:shadow-2xl relative overflow-hidden p-6 pt-10 flex flex-col gap-4 transition-transform duration-700 group-hover:-translate-y-2 group-hover:rotate-1">
+                <!-- Notch / Dynamic Island -->
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-6 bg-slate-800 dark:bg-black rounded-full mb-4"></div>
 
                 <!-- Abstract Task Items -->
                 <div
-                  class="w-full h-20 rounded-2xl bg-accent/15 dark:bg-accent/10 border border-accent/30 dark:border-accent/20 animate-pulse-slow shadow-sm dark:shadow-none">
+                  class="w-full h-16 rounded-2xl bg-accent/20 dark:bg-accent/10 border border-accent/30 dark:border-accent/20 animate-pulse-slow">
                 </div>
                 <div
-                  class="w-full h-20 rounded-2xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] shadow-sm dark:shadow-none">
+                  class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05]">
                 </div>
                 <div
-                  class="w-full h-20 rounded-2xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] shadow-sm dark:shadow-none">
+                  class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05]">
                 </div>
                 <div
-                  class="w-full h-20 rounded-2xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.05] shadow-sm dark:shadow-none opacity-60 dark:opacity-50">
+                  class="w-full h-16 rounded-2xl bg-slate-200 dark:bg-white/[0.05] border border-slate-300 dark:border-white/[0.05] opacity-60">
                 </div>
               </div>
 
@@ -397,7 +367,7 @@
 
     <!-- Contact Section -->
     <section id="contact" class="fade-section max-w-4xl mx-auto px-6 text-center reveal mt-40">
-      <div class="glow-card glass rounded-[3rem] py-24 px-8 flex flex-col items-center relative overflow-hidden group">
+      <div class="glass rounded-[3rem] py-24 px-8 flex flex-col items-center relative overflow-hidden group bg-slate-100/50 dark:bg-slate-900/50">
         <h2 class="text-4xl lg:text-5xl font-bold mb-6 relative z-10">Let's chat.</h2>
         <p class="text-lg text-slate-600 dark:text-slate-400 mb-12 max-w-lg mx-auto font-light relative z-10">
           Have an idea, a question, or just want to connect? We're always happy to hear from you.
@@ -467,22 +437,10 @@
         }
       });
 
-      // Parallax Background Orbs slightly
-      document.querySelectorAll('.bg-orb').forEach((el, index) => {
-        el.style.transform = `translateY(${scrolled * (index + 1) * 0.05}px)`;
-      });
+
     });
 
-    // Interactive Card Glow tracking mouse
-    document.querySelectorAll('.glow-card').forEach(card => {
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-      });
-    });
+
 
     // Hero Mockup Mouse Parallax (smooth 3D tilt)
     const heroMockupContainer = document.querySelector('.hero-mockup-container');
